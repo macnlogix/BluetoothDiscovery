@@ -1,9 +1,11 @@
-var exec = require('cordova/exec');
 var pluginName = "BluetoothDiscovery";
 
 let bluetoothDiscovery = {
     coolMethod: function(successCallback, errorCallback, params) {
-        exec(successCallback, errorCallback, pluginName, "coolMethod", [params]);
+        cordova.exec(successCallback, errorCallback, pluginName, "coolMethod", [params]);
+    },
+    isBluetoothActive: function(successCallback, errorCallback, params) {
+        cordova.exec(successCallback, errorCallback, pluginName, "isBluetoothActive", [params]);
     },
 }
 

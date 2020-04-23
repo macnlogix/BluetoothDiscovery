@@ -1,4 +1,4 @@
-package cordova-plugin-bluetooth-discovery;
+package cordova.plugin.bluetooth.discovery;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
