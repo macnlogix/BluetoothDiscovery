@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin 
+    xmlns="http://apache.org/cordova/ns/plugins/1.0" 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    id="cordova-plugin-bluetooth-discovery" 
+    version="1.0.0">
+   
+    <name>BluetoothDiscovery</name>
+    
+    <js-module name="BluetoothDiscovery" src="www/BluetoothDiscovery.js">
+        <clobbers target="BluetoothDiscovery" />
+    </js-module>
+    
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="BluetoothDiscovery">
+                <param name="android-package" value="cordova.plugin.bluetooth.discovery.BluetoothDiscovery" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml" />
+        <source-file src="src/android/BluetoothDiscovery.java" target-dir="src/cordova/plugin/bluetooth/discovery/BluetoothDiscovery" />
+    </platform>
+
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="BluetoothDiscovery">
+                <param name="ios-package" value="BluetoothDiscovery" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/BluetoothDiscovery.m" />
+    </platform>
+
+</plugin>

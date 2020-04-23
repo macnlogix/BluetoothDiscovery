@@ -1,0 +1,25 @@
+{
+  "name": "bluetoothdiscovery",
+  "version": "1.0.0",
+  "description": "Use the Bluetooth plugin to find new Bluetooth devices",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/macnlogix/BluetoothDiscovery.git"
+  },
+  "keywords": [
+    "bluetooth",
+    "bluetooth",
+    "classic",
+    "cordova"
+  ],
+  "author": "Muhammad Arslan Chishti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/macnlogix/BluetoothDiscovery/issues"
+  },
+  "homepage": "https://github.com/macnlogix/BluetoothDiscovery#readme"
+}
