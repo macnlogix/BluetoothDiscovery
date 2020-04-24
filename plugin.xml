@@ -17,8 +17,14 @@
                 <param name="android-package" value="cordova.plugin.bluetooth.discovery.BluetoothDiscovery" />
             </feature>
         </config-file>
-        <config-file parent="/*" target="AndroidManifest.xml" />
+        <!-- <config-file parent="/*" target="AndroidManifest.xml" /> -->
         <source-file src="src/android/BluetoothDiscovery.java" target-dir="src/cordova/plugin/bluetooth/discovery/BluetoothDiscovery" />
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.BLUETOOTH"/>
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+        </config-file>
     </platform>
 
     <platform name="ios">
