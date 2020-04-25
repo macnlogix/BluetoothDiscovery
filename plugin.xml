@@ -34,6 +34,9 @@
             </feature>
         </config-file>
         <source-file src="src/ios/BluetoothDiscovery.m" />
+        <source-file src="src/ios/BluetoothDevice.h" />
+        <source-file src="src/ios/BluetoothDeviceHandler.h" />
+        <source-file src="src/ios/BluetoothDeviceHandler.m" />
         <source-file src="src/ios/BluetoothManager.h" />
         <source-file src="src/ios/BluetoothManagerHandler.h" />
         <source-file src="src/ios/BluetoothManagerHandler.m" />
