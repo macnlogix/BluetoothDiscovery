@@ -1,15 +1,20 @@
 /********* BluetoothDiscovery.m Cordova Plugin Implementation *******/
 
 #import <Cordova/CDV.h>
+#import "BluetoothManagerHandler.h"
 
 @interface BluetoothDiscovery : CDVPlugin {
-  // Member variables go here.
+    BluetoothManagerHandler *bmH;
 }
 
 - (void)coolMethod:(CDVInvokedUrlCommand*)command;
+- (void)getAdapterInfoAction:(CDVInvokedUrlCommand*)command;
+- (void)scanDevices:(CDVInvokedUrlCommand*)command;
+
 @end
 
 @implementation BluetoothDiscovery
+
 
 - (void)coolMethod:(CDVInvokedUrlCommand*)command
 {
@@ -23,6 +28,19 @@
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)getAdapterInfoAction:(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = nil;
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)scanDevices:(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = nil;
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
 }
 
 @end

@@ -27,6 +27,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 /**
  * This class echoes a string called from JavaScript.
@@ -35,7 +37,7 @@ public class BluetoothDiscovery extends CordovaPlugin {
     
     private static final String TAG = "BluetoothDiscovery";
     private static final boolean D = true;
-
+    Handler mHandler;
     // actions
     private static final String LIST = "list";
     private static final String CONNECT = "connect";
@@ -122,11 +124,14 @@ public class BluetoothDiscovery extends CordovaPlugin {
     private CallbackContext permissionsCallback;
     private CallbackContext locationCallback;
 
+    private List<BluetoothDevice> devices = new ArrayList();
+    private List<String> deviceAddresses = new ArrayList();
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         LOG.d(TAG, "action = " + action);
-
+        mHandler=new Handler();
         if (bluetoothAdapter == null) {
             bluetoothAdapter = getAdapter();
         }
@@ -163,11 +168,19 @@ public class BluetoothDiscovery extends CordovaPlugin {
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Create a new device item
-                scanCallbackContext.success("{\"deviceName\":"+device.getName()+",\"deviceName\":"+device.getAddress()+"}");
-                Log.d(TAG, "mBroadcastReceiver2: Discoverability Enabled.--"+device.getName()+"---"+device.getAddress());
+                //scanCallbackContext.success("{\"deviceName\":"+device.getName()+",\"deviceName\":"+device.getAddress()+"}");
+                if(device.getName() != null && !deviceAddresses.contains(device.getAddress())){
+                    devices.add(device);
+                    deviceAddresses.add(device.getAddress());
+                }
+
+
+                Log.d(TAG, "ACTION_FOUND--"+device.getName()+"---"+device.getAddress());
             }
         }
     };
+
+
 
     BroadcastReceiver scanModeReciver = new BroadcastReceiver() {
         @Override
@@ -232,8 +245,8 @@ public class BluetoothDiscovery extends CordovaPlugin {
 
     
 
-    private void getAdapterInfoAction(CallbackContext callbackContext) {  
-
+    private void getAdapterInfoAction(CallbackContext callbackContext) {
+        checkBTPermissions();
         JSONObject returnObj = new JSONObject();    
         
         addProperty(returnObj, keyAddress, bluetoothAdapter.getAddress());
@@ -261,6 +274,10 @@ public class BluetoothDiscovery extends CordovaPlugin {
 
     private void scanDevices(CallbackContext callbackContext) {
         Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
+        IntentFilter intentFilter = new IntentFilter(bluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        cordova.getActivity().registerReceiver(scanModeReciver,intentFilter);
+        devices = new ArrayList();
+        deviceAddresses = new ArrayList();
         scanCallbackContext = callbackContext;
         if(bluetoothAdapter.isDiscovering()){
             bluetoothAdapter.cancelDiscovery();
@@ -282,6 +299,27 @@ public class BluetoothDiscovery extends CordovaPlugin {
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             cordova.getActivity().registerReceiver(bReciever, discoverDevicesIntent);
         }
+
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                JSONArray devicesJsonArr = new JSONArray();
+                for (BluetoothDevice tempDevice : devices)
+                {
+                    JSONObject devicesJsonObj = new JSONObject();
+                    addProperty(devicesJsonObj, "name", tempDevice.getName());
+                    addProperty(devicesJsonObj, "address", tempDevice.getAddress());
+                    devicesJsonArr.put(devicesJsonObj);
+                }
+                JSONObject returnObj = new JSONObject();
+
+                addProperty(returnObj, "devices", devicesJsonArr);
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, returnObj);
+                pluginResult.setKeepCallback(true);
+                scanCallbackContext.sendPluginResult(pluginResult);
+            }
+        }, 10000);
+
     }
 
     public void hasPermissionAction(CallbackContext callbackContext) {
