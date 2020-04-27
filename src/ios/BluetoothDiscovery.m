@@ -5,7 +5,7 @@
 #import "BluetoothDeviceHandler.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 
-
+NSString *const keyStatus = @"status";
 NSString *const keyError = @"error";
 NSString *const keyMessage = @"message";
 NSString *const keyName = @"name";
@@ -14,6 +14,8 @@ NSString *const keyIsEnabled = @"isEnabled";
 
 
 NSString *const errorStartScan = @"startScan";
+NSString *const statusScanStarted = @"scanStarted";
+
 NSString *const logAlreadyScanning = @"Scanning already in progress";
 NSString *const logNotScanning = @"Not scanning";
 
@@ -21,6 +23,7 @@ NSString *const logNotScanning = @"Not scanning";
     CBCentralManager *centralManager;
     BluetoothManagerHandler *bmH;
     NSMutableArray *devices;
+    NSMutableArray *devicesAddresses;
     NSString* scanCallback;
 
 }
@@ -85,6 +88,8 @@ NSString *const logNotScanning = @"Not scanning";
 
     if (devices == nil) {
         devices = [[NSMutableArray alloc] init];
+        devicesAddresses = [[NSMutableArray alloc] init];
+
     }
     [[NSNotificationCenter defaultCenter] addObserver:self
     selector:@selector(receiveTestNotification:)
@@ -92,8 +97,14 @@ NSString *const logNotScanning = @"Not scanning";
     object:nil];
     [[BluetoothManagerHandler sharedInstance] startScan];
     
-    CDVPluginResult* pluginResult = nil;
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+//    CDVPluginResult* pluginResult = nil;
+//    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+//    NSMutableDictionary* returnObj = [NSMutableDictionary dictionaryWithObjectsAndKeys: statusScanStarted, keyStatus, nil];
+//    [returnObj setValue:devices forKey:@"devices"];
+//    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
+//    [pluginResult setKeepCallbackAsBool:true];
+//    [self.commandDelegate sendPluginResult:pluginResult callbackId:scanCallback];
 
 }
 
@@ -103,7 +114,13 @@ NSString *const logNotScanning = @"Not scanning";
     if ([[notification name] isEqualToString:@"BluetoothDeviceDiscoveredNotification"]){
         BluetoothDeviceHandler *bdh = [[BluetoothDeviceHandler alloc] initWithNotification:notification];
         NSLog (@"Successfully received the test notification! %@ %@", [notification name], bdh.name);
-        [devices addObject: [NSString stringWithFormat:@"{\"name\":\"%@\", \"address\":\"%@\"}", bdh.name, bdh.address]];
+        if([devicesAddresses indexOfObject:bdh.address] == NSNotFound){
+            NSMutableDictionary *tempDevice = [[NSMutableDictionary alloc] init];
+            [tempDevice setValue:bdh.name forKey:keyName];
+            [tempDevice setValue:bdh.address forKey:keyAddress];
+            [devices addObject: tempDevice];
+            [devicesAddresses addObject:bdh.address];
+        }
     }
 }
 
@@ -116,6 +133,7 @@ NSString *const logNotScanning = @"Not scanning";
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
     [pluginResult setKeepCallbackAsBool:true];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:scanCallback];
+    [[BluetoothManagerHandler sharedInstance] stopScan];
     scanCallback = nil;
 }
 
