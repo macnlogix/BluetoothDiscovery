@@ -80,7 +80,7 @@ NSString *const logNotScanning = @"Not scanning";
     }
     
     scanCallback = command.callbackId;
-    [self performSelector:@selector(sendResponse) withObject:nil afterDelay:10.0];
+    [self performSelector:@selector(sendResponse) withObject:nil afterDelay:30.0];
 //    NSDictionary* returnObj = [NSDictionary dictionaryWithObjectsAndKeys: statusScanStarted, keyStatus, nil];
 //    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:returnObj];
 //    [pluginResult setKeepCallbackAsBool:true];

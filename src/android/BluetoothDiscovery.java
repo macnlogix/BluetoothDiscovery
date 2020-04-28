@@ -318,7 +318,7 @@ public class BluetoothDiscovery extends CordovaPlugin {
                 pluginResult.setKeepCallback(true);
                 scanCallbackContext.sendPluginResult(pluginResult);
             }
-        }, 10000);
+        }, 30000);
 
     }
 
